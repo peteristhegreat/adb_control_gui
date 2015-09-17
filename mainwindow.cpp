@@ -42,9 +42,12 @@ void MainWindow::readSettings()
 //    qDebug() << Q_FUNC_INFO;
 
     QSettings s;
-    ui->detachedButton->setChecked(s.value("detached_process", true).toBool());
-    ui->embeddedButton->setChecked(s.value("embedded_process", false).toBool());
+    ui->embeddedButton->setChecked(s.value("embedded_process", true).toBool());
+    ui->detachedButton->setChecked(s.value("detached_process", false).toBool());
     ui->desktopButton->setChecked(s.value("desktop_services", false).toBool());
+
+
+    ui->tabWidget->setCurrentIndex(s.value("last_tab", 1).toInt());
 
     QFile configFile("config.properties");
     if(!configFile.open(QFile::ReadOnly | QIODevice::Text))
@@ -78,6 +81,8 @@ void MainWindow::writeSettings()
     s.setValue("detached_process", ui->detachedButton->isChecked());
     s.setValue("embedded_process", ui->embeddedButton->isChecked());
     s.setValue("desktop_services", ui->desktopButton->isChecked());
+
+    s.setValue("last_tab", ui->tabWidget->currentIndex());
 }
 
 void MainWindow::on_getImagePath_clicked()
@@ -105,13 +110,13 @@ void MainWindow::on_getAdbPath_clicked()
 
 void MainWindow::on_delaySpinBox_valueChanged(int delay_ms)
 {
-//    qDebug() << delay_ms;
+    Q_UNUSED(delay_ms)
     generateConfigFile();
 }
 
 void MainWindow::on_deviceImagePathLineEdit_textChanged(const QString &imagePathDevice)
 {
-//    qDebug() << imagePathDevice;
+    Q_UNUSED(imagePathDevice)
     generateConfigFile();
 }
 
@@ -189,7 +194,7 @@ void MainWindow::on_standardError()
 
 void MainWindow::closeEvent(QCloseEvent *ce)
 {
-//    qDebug() << Q_FUNC_INFO;
+    Q_UNUSED(ce)
     writeSettings();
 }
 
