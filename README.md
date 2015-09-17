@@ -4,6 +4,8 @@ AdbControl with a nice GUI wrapper for launching it.
 
 Built with Qt goodness, and deployed with a NSIS installer.
 
+##### [Download Windows Installer](https://github.com/peteristhegreat/adb_control_gui/releases/download/0.1/AdbControlGuiInstaller_15.09.17.exe)
+
 ![Alt text](/adb_puppet.png?raw=true "Screenshot")
 
 ![Alt text](/screenshot_01.jpg?raw=true "Screenshot")
