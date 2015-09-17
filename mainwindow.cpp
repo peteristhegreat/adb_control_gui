@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->hide();
     ui->menuBar->hide();
     ui->desktopButton->hide();// ShellExecute 'adbcontrol.jar' failed (error 2).
+    ui->helpTextBrowser->setOpenExternalLinks(true);
 
     readSettings();
 

@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
     MainWindow w;
+    w.setWindowTitle(VER_PRODUCTNAME_STR);
     w.show();
 
     return a.exec();
