@@ -33,15 +33,21 @@ public class AdbHelper
 	
 	private void executeShellCommand(String cmd, OutputStream out)
 	{
-		executeCommand("shell " + cmd, out);
+		executeCommand("shell " + cmd, out, false);
 	}
-	
-	private void executeCommand(String cmd, OutputStream out)
+
+	private void executeShellCommand(String cmd, OutputStream out, boolean removeCRLF) { executeCommand("shell " + cmd, out, removeCRLF); }
+
+	private void executeCommand(String cmd, OutputStream out){
+		executeCommand(cmd, out, false);
+	}
+
+	private void executeCommand(String cmd, OutputStream out, boolean removeCRLF)
 	{
 		String cmdLine = config.getAdbCommand() + " " + cmd;
-		
+
 		Process p;
-		
+
 		try
 		{
 			p = Runtime.getRuntime().exec(cmdLine);
@@ -51,13 +57,13 @@ public class AdbHelper
 			ex.printStackTrace();
 			return;
 		}
-		
-		StreamGobbler outReader = new StreamGobbler(p.getInputStream(), out);
+
+		StreamGobbler outReader = new StreamGobbler(p.getInputStream(), out, removeCRLF);
 		StreamGobbler errReader = new StreamGobbler(p.getErrorStream(), null);
-		
+
 		outReader.start();
 		errReader.start();
-		
+
 		try
 		{
 			if(out != null)
@@ -69,7 +75,6 @@ public class AdbHelper
 		catch(InterruptedException ex)
 		{
 			Thread.currentThread().interrupt();
-			return;
 		}
 	}
 	
@@ -92,9 +97,13 @@ public class AdbHelper
 	public void screenshot(File target)
 	{
 		String fileName = config.getPhoneImageFilePath();
-		
 		executeShellCommand(MessageFormat.format("screencap -p {0}", fileName), new ByteArrayOutputStream());
 		executeCommand(MessageFormat.format("pull {0} {1}", fileName, target.getAbsolutePath()), new ByteArrayOutputStream());
+	}
+
+	public void screenshot(ByteArrayOutputStream stream)
+	{
+		executeShellCommand("screencap -p", stream, true);
 	}
 
 	public void sendSwipe(int downX, int downY, int upX, int upY)
