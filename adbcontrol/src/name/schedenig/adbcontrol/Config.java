@@ -21,7 +21,8 @@ public class Config
 	private long screenshotDelay;
 	private String localImageFilePath;
 	private String phoneImageFilePath;
-	
+	private Boolean useDirect;
+
 	public void load(InputStream in) throws IOException
 	{
 		Properties properties = new Properties();
@@ -31,6 +32,7 @@ public class Config
 		screenshotDelay = Long.parseLong(properties.getProperty("screenshotDelay"));
 		localImageFilePath = properties.getProperty("localImageFilePath");
 		phoneImageFilePath = properties.getProperty("phoneImageFilePath");
+		useDirect = Boolean.parseBoolean(properties.getProperty("useDirect"));
 	}
 	
 	public String getAdbCommand()
@@ -72,4 +74,8 @@ public class Config
 	{
 		this.phoneImageFilePath = phoneImageFilePath;
 	}
+
+	public Boolean getUseDirect() { return useDirect; }
+
+	public void setUseDirect(Boolean useDirect) { this.useDirect = useDirect; }
 }

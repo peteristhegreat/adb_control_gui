@@ -19,6 +19,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,12 +39,12 @@ public class AdbControlPanel extends JPanel implements MouseListener, KeyListene
 	private int downX;
 	private int downY;
 	private Config config;
-	
+
 	public AdbControlPanel(Config config)
 	{
 		this.config = config;
-		
-		imageFile = new File(config.getLocalImageFilePath());
+		if( !config.getUseDirect() )
+			imageFile = new File(config.getLocalImageFilePath());
 		
 		addComponentListener(new ComponentAdapter()
 		{
@@ -124,7 +126,7 @@ public class AdbControlPanel extends JPanel implements MouseListener, KeyListene
 			
 			double scaledWidth = (double) screenWidth * ratio;
 			double scaledHeight = (double) screenHeight * ratio;
-			
+
 			g.drawImage(image, 0, 0, (int) scaledWidth, (int) scaledHeight, null);
 		}
 	}
@@ -244,8 +246,14 @@ public class AdbControlPanel extends JPanel implements MouseListener, KeyListene
 
 	private void makeScreenshot()
 	{
-		adbHelper.screenshot(imageFile);
-		loadImage(imageFile);
+		if( config.getUseDirect() ){
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			adbHelper.screenshot(stream);
+			loadImage(stream);
+		}else {
+			adbHelper.screenshot(imageFile);
+			loadImage(imageFile);
+		}
 	}
 
 	private void loadImage(File file)
@@ -260,6 +268,21 @@ public class AdbControlPanel extends JPanel implements MouseListener, KeyListene
 			return;
 		}
 		
+		repaint();
+	}
+
+	private void loadImage(ByteArrayOutputStream stream)
+	{
+		try
+		{
+			image = ImageIO.read(new ByteArrayInputStream(stream.toByteArray()));
+		}
+		catch(IOException ex)
+		{
+			ex.printStackTrace();
+			return;
+		}
+
 		repaint();
 	}
 
